@@ -1,35 +1,31 @@
 package data
 
 import (
-	"regexp"
-
 	"github.com/go-playground/validator"
 )
 
-// The current setup works well with a single struct to validate
-// The struct to validate should be passed as an interface in the future and the errors should be handled as individual error strings
-// For further information see :
-// Validator library : https://github.com/go-playground/validator
-// Nic Jackson episode : https://github.com/nicholasjackson/building-microservices-youtube/blob/episode_7/product-api/data/validation.go
-
-// ValidateProduct a product with json validation and customer SKU validator
-func (product *Product) ValidateProduct() error {
+// ValidatePlayer a player with json validation and in queue validator
+func (player *Player) ValidatePlayer() error {
 	validate := validator.New()
-	err := validate.RegisterValidation("sku", validateSKU)
-	if err != nil {
-		// Panic if we get this error, that means we are not validating input
-		// This will be handled in a better way once we move the JSON validation to accept an interface
-		panic(err)
+	err1 := validate.RegisterValidation("exist", validateExist)
+	err2 := validate.RegisterValidation("notinqueue", validateNotInQueue)
+	if err1 != nil {
+		panic(err1)
+	} else if err2 != nil {
+		panic(err2)
 	}
 
-	return validate.Struct(product)
+	return validate.Struct(player)
 }
 
-// Custom SKU validator
-func validateSKU(fieldLevel validator.FieldLevel) bool {
-	// sku is of format abc-absd-dfsdf
-	re := regexp.MustCompile(`[a-z]+-[a-z]+-[a-z]+`)
-	matches := re.FindAllString(fieldLevel.Field().String(), -1)
+// validates that the player exist
+func validateExist(fieldLevel validator.FieldLevel) bool {
+	// validation of the UserID with a call to microservice-user 
+	return true
+}
 
-	return len(matches) == 1
+
+// validates that the player is not already in the queue
+func validateNotInQueue(fieldLevel validator.FieldLevel) bool {
+	return !InQueue(int(fieldLevel.Field().Int()))
 }

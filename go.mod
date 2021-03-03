@@ -1,4 +1,4 @@
-module github.com/Ubivius/microservice-template
+module github.com/Ubivius/microservice-matchmaking
 
 go 1.15
 
