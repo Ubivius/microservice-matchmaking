@@ -11,6 +11,13 @@ func (queueHandler *QueueHandler) AddPlayer(responseWriter http.ResponseWriter, 
 	queueHandler.logger.Println("Handle POST Player")
 	player := request.Context().Value(KeyPlayer{}).(*data.Player)
 
-	data.AddPlayer(player)
+	err := data.AddPlayer(player)
+
+	if err != nil {
+		queueHandler.logger.Println("[ERROR] adding player", err)
+		http.Error(responseWriter, "Error adding player", http.StatusInternalServerError)
+		return
+	}
+
 	responseWriter.WriteHeader(http.StatusNoContent)
 }

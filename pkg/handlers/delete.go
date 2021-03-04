@@ -20,7 +20,7 @@ func (queueHandler *QueueHandler) Delete(responseWriter http.ResponseWriter, req
 
 	if err != nil {
 		queueHandler.logger.Println("[ERROR] deleting player", err)
-		http.Error(responseWriter, "Error deleting poduct", http.StatusInternalServerError)
+		http.Error(responseWriter, "Error deleting player", http.StatusInternalServerError)
 		return
 	}
 
