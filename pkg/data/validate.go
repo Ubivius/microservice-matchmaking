@@ -29,7 +29,6 @@ func validateExist(fieldLevel validator.FieldLevel) bool {
 	return true
 }
 
-
 // validates that the player is not already in the queue
 func validateNotInQueue(fieldLevel validator.FieldLevel) bool {
 	return !InQueue(int(fieldLevel.Field().Int()))
