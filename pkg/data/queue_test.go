@@ -8,8 +8,11 @@ func TestAddPlayer(t *testing.T) {
 		UserIP: "123.123.123.123",
 	}
 
-	AddPlayer(player)
+	err := AddPlayer(player)
 
+	if err != nil {
+		t.Fatal(err)
+	}
 	if findIndexByPlayerID(player.UserID) == -1 {
 		t.Fatal("The player has not been added to the queue")
 	}
@@ -41,10 +44,10 @@ func TestStartGame(t *testing.T) {
 		UserIP: "123.123.123.123",
 	}
 
-	err := AddPlayer(player1)
-	err = AddPlayer(player2)
+	errAddPlayer1 := AddPlayer(player1)
+	errAddPlayer2 := AddPlayer(player2)
 
-	if err != nil {
-		t.Fatal(err)
+	if errAddPlayer1 != nil || errAddPlayer2 != nil {
+		t.Fatal("Error adding players and sending the request to the Dispatcher")
 	}
 }

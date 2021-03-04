@@ -34,7 +34,11 @@ func TestPlayerAlreadyInQueue(t *testing.T) {
 		UserIP: "123.123.123.123",
 	}
 
-	AddPlayer(player)
+	errAddPlayer := AddPlayer(player)
+
+	if errAddPlayer != nil {
+		t.Fatal(errAddPlayer)
+	}
 
 	err := player.ValidatePlayer()
 
