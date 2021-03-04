@@ -11,6 +11,7 @@ var ErrorPlayerNotFound = fmt.Errorf("Player not found")
 // Formatting done with json tags to the right. "-" : don't include when encoding to json
 type Player struct {
 	UserID          int     `json:"userid" validate:"required,notinqueue,exist"`
+	UserIP 	        string 	`json:"userip" validate:"required,ip"`
 }
 
 // Players is a collection of Player
@@ -52,8 +53,10 @@ func findIndexByPlayerID(id int) int {
 var queue = []*Player{
 	{
 		UserID: 2452,
+		UserIP: "127.0.0.1",
 	},
 	{
 		UserID: 42,
+		UserIP: "192.223.10.1",
 	},
 }

@@ -15,6 +15,7 @@ func TestValidationMiddlewareWithValidBody(t *testing.T) {
 	// Creating request body
 	body := &data.Player{
 		UserID: 3,
+		UserIP: "123.123.123.123",
 	}
 	bodyBytes, _ := json.Marshal(body)
 
