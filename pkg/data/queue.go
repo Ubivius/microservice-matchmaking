@@ -57,7 +57,6 @@ func findIndexByPlayerID(id int) int {
 // If so, a request with a group of players is sent to the Dispatcher to start a game
 // Complexity will increase in the next iteration
 func checkQueue() error {
-	fmt.Println(queue)
 	if len(queue) >= numPlayersInAGame {
 		party := queue[0:numPlayersInAGame-1]
 		err := startGame(party)
