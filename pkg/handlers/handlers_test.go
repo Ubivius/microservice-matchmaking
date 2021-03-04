@@ -19,21 +19,6 @@ func NewTestLogger() *log.Logger {
 	return log.New(os.Stdout, "Tests", log.LstdFlags)
 }
 
-func TestGetQueue(t *testing.T) {
-	request := httptest.NewRequest(http.MethodGet, "/queue", nil)
-	response := httptest.NewRecorder()
-
-	queueHandler := NewQueueHandler(NewTestLogger())
-	queueHandler.GetQueue(response, request)
-
-	if response.Code != 200 {
-		t.Errorf("Expected status code 200 but got : %d", response.Code)
-	}
-	if !strings.Contains(response.Body.String(), "\"userid\":42") {
-		t.Error("Missing elements from expected results")
-	}
-}
-
 func TestInQueue(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/queue/42", nil)
 	response := httptest.NewRecorder()

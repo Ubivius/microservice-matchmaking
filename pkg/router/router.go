@@ -15,7 +15,6 @@ func New(queueHandler *handlers.QueueHandler, logger *log.Logger) *mux.Router {
 
 	// Get Router
 	getRouter := router.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/queue", queueHandler.GetQueue)
 	getRouter.HandleFunc("/queue/{id:[0-9]+}", queueHandler.InQueue)
 
 	// Post router

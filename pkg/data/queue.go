@@ -16,12 +16,6 @@ type Player struct {
 // Players is a collection of Player
 type Players []*Player
 
-
-// GetQueue returns the list of players in queue
-func GetQueue() Players {
-	return queue
-}
-
 // InQueue returns a boolean that verifies that a player is queued
 func InQueue(id int) bool {
 	return findIndexByPlayerID(id) > 0
@@ -55,13 +49,6 @@ func findIndexByPlayerID(id int) int {
 	return -1
 }
 
-//////////////////////////////////////////////////////////////////////////////
-/////////////////////////// Fake database ///////////////////////////////////
-///// DB connection setup and docker file will be done in sprint 8 /////////
-///////////////////////////////////////////////////////////////////////////
-
-// queue is a hard coded list of players for this
-// example data source. Should be replaced by database connection
 var queue = []*Player{
 	{
 		UserID: 2452,
