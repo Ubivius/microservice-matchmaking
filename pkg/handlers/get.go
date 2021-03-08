@@ -10,7 +10,7 @@ import (
 // InQueue returns a bool that verifies that a player is queued
 func (queueHandler *QueueHandler) InQueue(responseWriter http.ResponseWriter, request *http.Request) {
 	id := getPlayerID(request)
-	queueHandler.logger.Println("Handle DELETE player", id)
+	queueHandler.logger.Println("Handle GET InQueue", id)
 	inQueue := data.InQueue(id)
 	err := json.NewEncoder(responseWriter).Encode(inQueue)
 	if err != nil {
