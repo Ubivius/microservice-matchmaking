@@ -3,14 +3,21 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Ubivius/microservice-template/pkg/data"
+	"github.com/Ubivius/microservice-matchmaking/pkg/data"
 )
 
-// AddProduct creates a new product from the received JSON
-func (productHandler *ProductsHandler) AddProduct(responseWriter http.ResponseWriter, request *http.Request) {
-	productHandler.logger.Println("Handle POST Product")
-	product := request.Context().Value(KeyProduct{}).(*data.Product)
+// AddPlayer add the player to the queue from the received JSON
+func (queueHandler *QueueHandler) AddPlayer(responseWriter http.ResponseWriter, request *http.Request) {
+	queueHandler.logger.Println("Handle POST Player")
+	player := request.Context().Value(KeyPlayer{}).(*data.Player)
 
-	data.AddProduct(product)
+	err := data.AddPlayer(player)
+
+	if err != nil {
+		queueHandler.logger.Println("[ERROR] adding player", err)
+		http.Error(responseWriter, "Error adding player", http.StatusInternalServerError)
+		return
+	}
+
 	responseWriter.WriteHeader(http.StatusNoContent)
 }
