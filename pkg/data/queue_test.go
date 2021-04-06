@@ -4,7 +4,7 @@ import "testing"
 
 func TestAddPlayer(t *testing.T) {
 	player := &Player{
-		UserID: 1,
+		UserID: "a2181017-5c53-422b-b6bc-036b27c04fc8",
 		UserIP: "123.123.123.123",
 	}
 
@@ -19,7 +19,7 @@ func TestAddPlayer(t *testing.T) {
 }
 
 func TestDeletePlayer(t *testing.T) {
-	err := DeletePlayer(42)
+	err := DeletePlayer("a2181017-5c53-422b-b6bc-036b27c04fc8")
 
 	if err != nil {
 		t.Fatal(err)
@@ -27,7 +27,7 @@ func TestDeletePlayer(t *testing.T) {
 }
 
 func TestDeletePlayerNotInQueue(t *testing.T) {
-	err := DeletePlayer(2)
+	err := DeletePlayer("6df55d54-96f3-11eb-a8b3-0242ac130003")
 
 	if !(err != nil && err.Error() == "Player not found") {
 		t.Fatal("The player is not in the queue, so it is assumed not to be found")
@@ -36,11 +36,11 @@ func TestDeletePlayerNotInQueue(t *testing.T) {
 
 func TestStartGame(t *testing.T) {
 	player1 := &Player{
-		UserID: 1,
+		UserID: "6df55d54-96f3-11eb-a8b3-0242ac130003",
 		UserIP: "123.123.123.123",
 	}
 	player2 := &Player{
-		UserID: 2,
+		UserID: "73dfa062-96f3-11eb-a8b3-0242ac130003",
 		UserIP: "123.123.123.123",
 	}
 

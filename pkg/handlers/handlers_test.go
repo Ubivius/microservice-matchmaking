@@ -3,10 +3,8 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,20 +12,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Move to util package in Sprint 9, should be a testing specific logger
-func NewTestLogger() *log.Logger {
-	return log.New(os.Stdout, "Tests", log.LstdFlags)
-}
-
 func TestInQueue(t *testing.T) {
-	request := httptest.NewRequest(http.MethodGet, "/queue/42", nil)
+	request := httptest.NewRequest(http.MethodGet, "/queue/a2181017-5c53-422b-b6bc-036b27c04fc8", nil)
 	response := httptest.NewRecorder()
 
-	queueHandler := NewQueueHandler(NewTestLogger())
+	queueHandler := NewQueueHandler()
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "42",
+		"id": "a2181017-5c53-422b-b6bc-036b27c04fc8",
 	}
 	request = mux.SetURLVars(request, vars)
 
@@ -47,14 +40,14 @@ func TestInQueue(t *testing.T) {
 }
 
 func TestNotInQueue(t *testing.T) {
-	request := httptest.NewRequest(http.MethodGet, "/queue/1", nil)
+	request := httptest.NewRequest(http.MethodGet, "/queue/6e3feed6-96f4-11eb-a8b3-0242ac130003", nil)
 	response := httptest.NewRecorder()
 
-	queueHandler := NewQueueHandler(NewTestLogger())
+	queueHandler := NewQueueHandler()
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "1",
+		"id": "6e3feed6-96f4-11eb-a8b3-0242ac130003",
 	}
 	request = mux.SetURLVars(request, vars)
 
@@ -74,14 +67,14 @@ func TestNotInQueue(t *testing.T) {
 }
 
 func TestDeleteNonExistantPlayer(t *testing.T) {
-	request := httptest.NewRequest(http.MethodDelete, "/queue/4", nil)
+	request := httptest.NewRequest(http.MethodDelete, "/queue/6e3feed6-96f4-11eb-a8b3-0242ac130003", nil)
 	response := httptest.NewRecorder()
 
-	queueHandler := NewQueueHandler(NewTestLogger())
+	queueHandler := NewQueueHandler()
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "4",
+		"id": "6e3feed6-96f4-11eb-a8b3-0242ac130003",
 	}
 	request = mux.SetURLVars(request, vars)
 
@@ -97,7 +90,7 @@ func TestDeleteNonExistantPlayer(t *testing.T) {
 func TestAddPlayer(t *testing.T) {
 	// Creating request body
 	body := &data.Player{
-		UserID: 1,
+		UserID: "6e3feed6-96f4-11eb-a8b3-0242ac130003",
 	}
 
 	request := httptest.NewRequest(http.MethodPost, "/queue", nil)
@@ -107,7 +100,7 @@ func TestAddPlayer(t *testing.T) {
 	ctx := context.WithValue(request.Context(), KeyPlayer{}, body)
 	request = request.WithContext(ctx)
 
-	queueHandler := NewQueueHandler(NewTestLogger())
+	queueHandler := NewQueueHandler()
 	queueHandler.AddPlayer(response, request)
 
 	if response.Code != http.StatusNoContent {
@@ -116,14 +109,14 @@ func TestAddPlayer(t *testing.T) {
 }
 
 func TestDeleteExistingPlayer(t *testing.T) {
-	request := httptest.NewRequest(http.MethodDelete, "/queue/42", nil)
+	request := httptest.NewRequest(http.MethodDelete, "/queue/a2181017-5c53-422b-b6bc-036b27c04fc8", nil)
 	response := httptest.NewRecorder()
 
-	queueHandler := NewQueueHandler(NewTestLogger())
+	queueHandler := NewQueueHandler()
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "42",
+		"id": "a2181017-5c53-422b-b6bc-036b27c04fc8",
 	}
 	request = mux.SetURLVars(request, vars)
 

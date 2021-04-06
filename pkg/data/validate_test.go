@@ -4,7 +4,7 @@ import "testing"
 
 func TestChecksValidation(t *testing.T) {
 	player := &Player{
-		UserID: 23,
+		UserID: "b70e1d8c-96f3-11eb-a8b3-0242ac130003",
 		UserIP: "123.123.123.123",
 	}
 
@@ -17,7 +17,7 @@ func TestChecksValidation(t *testing.T) {
 
 func TestInvalidIP(t *testing.T) {
 	player := &Player{
-		UserID: 1,
+		UserID: "73dfa062-96f3-11eb-a8b3-0242ac130003",
 		UserIP: "423.123.123.123",
 	}
 
@@ -30,7 +30,7 @@ func TestInvalidIP(t *testing.T) {
 
 func TestPlayerAlreadyInQueue(t *testing.T) {
 	player := &Player{
-		UserID: 42,
+		UserID: "a2181017-5c53-422b-b6bc-036b27c04fc8",
 		UserIP: "123.123.123.123",
 	}
 

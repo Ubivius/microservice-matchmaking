@@ -9,20 +9,20 @@ import (
 // Delete a player with specified id from the queue
 func (queueHandler *QueueHandler) Delete(responseWriter http.ResponseWriter, request *http.Request) {
 	id := getPlayerID(request)
-	queueHandler.logger.Println("Handle DELETE player", id)
+	log.Info("Delete player by ID request", "id", id)
 
 	err := data.DeletePlayer(id)
-	if err == data.ErrorPlayerNotFound {
-		queueHandler.logger.Println("[ERROR] deleting, id does not exist")
+	switch err {
+	case nil:
+		responseWriter.WriteHeader(http.StatusNoContent)
+		return
+	case data.ErrorPlayerNotFound:
+		log.Error(err, "Error deleting player, id does not exist")
 		http.Error(responseWriter, "Player not found", http.StatusNotFound)
 		return
-	}
-
-	if err != nil {
-		queueHandler.logger.Println("[ERROR] deleting player", err)
+	default:
+		log.Error(err, "Error deleting player")
 		http.Error(responseWriter, "Error deleting player", http.StatusInternalServerError)
 		return
 	}
-
-	responseWriter.WriteHeader(http.StatusNoContent)
 }
