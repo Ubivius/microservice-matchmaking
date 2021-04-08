@@ -27,22 +27,3 @@ func TestInvalidIP(t *testing.T) {
 		t.Fatal("Each part of the IP address is assumed to be between 255 and 0")
 	}
 }
-
-func TestPlayerAlreadyInQueue(t *testing.T) {
-	player := &Player{
-		UserID: "a2181017-5c53-422b-b6bc-036b27c04fc8",
-		UserIP: "123.123.123.123",
-	}
-
-	errAddPlayer := AddPlayer(player)
-
-	if errAddPlayer != nil {
-		t.Fatal(errAddPlayer)
-	}
-
-	err := player.ValidatePlayer()
-
-	if !(err != nil && err.Error() == "Key: 'Player.UserID' Error:Field validation for 'UserID' failed on the 'notinqueue' tag") {
-		t.Fatal("The player is assumed to be already in the queue and should not be added again")
-	}
-}
