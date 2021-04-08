@@ -16,6 +16,14 @@ func (queueHandler *QueueHandler) AddPlayer(responseWriter http.ResponseWriter, 
 	case nil:
 		responseWriter.WriteHeader(http.StatusNoContent)
 		return
+	case data.ErrorUserNotFound:
+		log.Error(err, "UserID doesn't exist")
+		http.Error(responseWriter, "UserID doesn't exist", http.StatusBadRequest)
+		return
+	case data.ErrorAlreadyInQueue:
+		log.Error(err, "Player is already in queue")
+		http.Error(responseWriter, "Player is already in queue", http.StatusBadRequest)
+		return
 	default:
 		log.Error(err, "Error adding player")
 		http.Error(responseWriter, "Error adding player", http.StatusInternalServerError)
