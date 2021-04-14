@@ -2,22 +2,31 @@ package data
 
 import (
 	"fmt"
+	"net/http"
 )
 
 const numPlayersInAGame = 4
 
 // ErrorPlayerNotFound : Player specific errors
-var ErrorPlayerNotFound = fmt.Errorf("Player not found")
+var ErrorPlayerNotFound = fmt.Errorf("player not found")
+
+// ErrorUserNotFound : User specific errors
+var ErrorUserNotFound = fmt.Errorf("user not found")
+
+// ErrorAlreadyInQueue : Error return when we try to add a player already in queue
+var ErrorAlreadyInQueue = fmt.Errorf("player already in queue")
 
 // Player defines the structure for an player in queue.
 // Formatting done with json tags to the right. "-" : don't include when encoding to json
 type Player struct {
-	UserID          string  `json:"user_id" validate:"required,notinqueue,exist"`
+	UserID          string  `json:"user_id" validate:"required"`
 	UserIP 	        string 	`json:"user_ip" validate:"required,ip"`
 }
 
 // Players is a collection of Player
 type Players []*Player
+
+const MicroserviceUserPath = "http://microservice-user:9090"
 
 // InQueue returns a boolean that verifies that a player is queued
 func InQueue(id string) bool {
@@ -26,6 +35,14 @@ func InQueue(id string) bool {
 
 // AddPlayer append a player to the queue
 func AddPlayer(player *Player) error {
+	if !validateUserExist(player.UserID){
+		return ErrorUserNotFound
+	}
+
+	if InQueue(player.UserID){
+		return ErrorAlreadyInQueue
+	}
+
 	queue = append(queue, player)
 	return checkQueue()
 }
@@ -58,7 +75,7 @@ func findIndexByPlayerID(id string) int {
 // Complexity will increase in the next iteration
 func checkQueue() error {
 	if len(queue) >= numPlayersInAGame {
-		party := queue[0:numPlayersInAGame-1]
+		party := queue[0:numPlayersInAGame]
 		err := startGame(party)
 		if err != nil {
 			return err
@@ -68,7 +85,14 @@ func checkQueue() error {
 	return nil
 }
 
+func validateUserExist(userID string) bool {
+	getUserByIDPath := MicroserviceUserPath + "/users/" + userID
+	resp, err := http.Get(getUserByIDPath)
+	return err == nil && resp.StatusCode == 200
+}
+
 func startGame(party Players) error {
+	log.Info("Start game!", "Party", party)
 	// Send request with party to Dispatcher
 	return nil
 }
