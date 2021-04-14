@@ -12,15 +12,15 @@ var ErrorPlayerNotFound = fmt.Errorf("Player not found")
 // Player defines the structure for an player in queue.
 // Formatting done with json tags to the right. "-" : don't include when encoding to json
 type Player struct {
-	UserID          int     `json:"userid" validate:"required,notinqueue,exist"`
-	UserIP 	        string 	`json:"userip" validate:"required,ip"`
+	UserID          string  `json:"user_id" validate:"required,notinqueue,exist"`
+	UserIP 	        string 	`json:"user_ip" validate:"required,ip"`
 }
 
 // Players is a collection of Player
 type Players []*Player
 
 // InQueue returns a boolean that verifies that a player is queued
-func InQueue(id int) bool {
+func InQueue(id string) bool {
 	return findIndexByPlayerID(id) > -1
 }
 
@@ -31,7 +31,7 @@ func AddPlayer(player *Player) error {
 }
 
 // DeletePlayer deletes the player with the given id from the queue
-func DeletePlayer(id int) error {
+func DeletePlayer(id string) error {
 	index := findIndexByPlayerID(id)
 	if index == -1 {
 		return ErrorPlayerNotFound
@@ -44,7 +44,7 @@ func DeletePlayer(id int) error {
 
 // Returns the index of a player in the queue
 // Returns -1 when no player is found
-func findIndexByPlayerID(id int) int {
+func findIndexByPlayerID(id string) int {
 	for index, player := range queue {
 		if player.UserID == id {
 			return index
@@ -75,11 +75,11 @@ func startGame(party Players) error {
 
 var queue = []*Player{
 	{
-		UserID: 2452,
+		UserID: "a2181017-5c53-422b-b6bc-036b27c04fc8",
 		UserIP: "127.0.0.1",
 	},
 	{
-		UserID: 42,
+		UserID: "e2382ea2-b5fa-4506-aa9d-d338aa52af44",
 		UserIP: "192.223.10.1",
 	},
 }
