@@ -9,10 +9,8 @@ Matchmaking microservice for our online game framework.
 
 `GET` `/health/ready` Returns a Status OK when ready or an error when dependencies are not available.
 
-`POST` `/queue` Add new user to the queue.
-
-###### Data Params
-
+`POST` `/queue` Add new user to the queue. </br>
+__Data Params__
 ```json
 {
   "user_id": "string, required",
