@@ -1,4 +1,4 @@
-module github.com/Ubivius/microservice-template
+module github.com/Ubivius/microservice-matchmaking
 
 go 1.15
 
@@ -10,4 +10,5 @@ require (
 	go.opentelemetry.io/otel/exporters/stdout v0.16.0
 	go.opentelemetry.io/otel/sdk v0.16.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
+	sigs.k8s.io/controller-runtime v0.8.3
 )

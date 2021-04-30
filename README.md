@@ -1,9 +1,21 @@
-# microservice-template
-Template for microservices.
+# microservice-matchmaking
+Matchmaking microservice for our online game framework.
 
-This template can be used to create another microservice without having to write any of the boilerplate code.
+## Matchmaking endpoints
 
-**Launch local ElasticSearch**
-----
-  Run the elasticsearch.sh script to start a local ElasticSearch DB in a docker container.
-  You can validate if it is running at localhost:9200 in your browser.
+`GET` `/queue/{user_id}` Returns true if the user is in queue. `user_id=[string]`
+
+`GET` `/health/live` Returns a Status OK when live.
+
+`GET` `/health/ready` Returns a Status OK when ready or an error when dependencies are not available.
+
+`POST` `/queue` Add new user to the queue. </br>
+__Data Params__
+```json
+{
+  "user_id": "string, required",
+  "user_ip": "string, required",
+}
+```
+
+`DELETE` `/queue/{user_id}` Delete user from queue.  `user_id=[string]`

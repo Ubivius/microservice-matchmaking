@@ -2,21 +2,28 @@ package main
 
 import (
 	"context"
-	"log"
+	"flag"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
-	"github.com/Ubivius/microservice-template/pkg/handlers"
-	"github.com/gorilla/mux"
+	"github.com/Ubivius/microservice-matchmaking/pkg/handlers"
+	"github.com/Ubivius/microservice-matchmaking/pkg/router"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
+var log = logf.Log.WithName("matchmaking-main")
+
 func main() {
-	// Logger
-	logger := log.New(os.Stdout, "Template", log.LstdFlags)
+	// Starting k8s logger
+	opts := zap.Options{}
+	opts.BindFlags(flag.CommandLine)
+	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
+	logf.SetLogger(newLogger.WithName("log"))
 
 	// Initialising open telemetry
 	// Creating console exporter
@@ -24,7 +31,7 @@ func main() {
 		stdout.WithPrettyPrint(),
 	)
 	if err != nil {
-		logger.Fatal("Failed to initialize stdout export pipeline : ", err)
+		log.Error(err, "Failed to initialize stdout export pipeline")
 	}
 
 	// Creating tracer provider
@@ -34,44 +41,24 @@ func main() {
 	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	// Creating handlers
-	productHandler := handlers.NewProductsHandler(logger)
+	queueHandler := handlers.NewQueueHandler()
 
-	// Mux route handling with gorilla/mux
-	router := mux.NewRouter()
-
-	// Get Router
-	getRouter := router.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/products", productHandler.GetProducts)
-	getRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.GetProductByID)
-
-	// Put router
-	putRouter := router.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/products", productHandler.UpdateProducts)
-	putRouter.Use(productHandler.MiddlewareProductValidation)
-
-	// Post router
-	postRouter := router.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/products", productHandler.AddProduct)
-	postRouter.Use(productHandler.MiddlewareProductValidation)
-
-	// Delete router
-	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
-	deleteRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.Delete)
+	// Router setup
+	r := router.New(queueHandler)
 
 	// Server setup
 	server := &http.Server{
 		Addr:        ":9090",
-		Handler:     router,
+		Handler:     r,
 		IdleTimeout: 120 * time.Second,
 		ReadTimeout: 1 * time.Second,
 	}
 
 	go func() {
-		logger.Println("Starting server on port ", server.Addr)
+		log.Info("Starting server", "port", server.Addr)
 		err := server.ListenAndServe()
 		if err != nil {
-			logger.Println("Error starting server : ", err)
-			logger.Fatal(err)
+			log.Error(err, "Server error")
 		}
 	}()
 
@@ -80,7 +67,7 @@ func main() {
 	signal.Notify(signalChannel, os.Interrupt)
 	receivedSignal := <-signalChannel
 
-	logger.Println("Received terminate, beginning graceful shutdown", receivedSignal)
+	log.Info("Received terminate, beginning graceful shutdown", "received_signal", receivedSignal.String())
 
 	// Server shutdown
 	timeoutContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
