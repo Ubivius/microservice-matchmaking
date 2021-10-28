@@ -8,14 +8,11 @@ import (
 
 // LivenessCheck determine when the application needs to be restarted
 func (queueHandler *QueueHandler) LivenessCheck(responseWriter http.ResponseWriter, request *http.Request) {
-	log.Info("LivenessCheck")
 	responseWriter.WriteHeader(http.StatusOK)
 }
 
 //ReadinessCheck verifies that the application is ready to accept requests
 func (queueHandler *QueueHandler) ReadinessCheck(responseWriter http.ResponseWriter, request *http.Request) {
-	log.Info("ReadinessCheck")
-
 	readinessProbeMicroserviceUser := data.MicroserviceUserPath + "/health/ready"
 
 	_, errMicroserviceUser := http.Get(readinessProbeMicroserviceUser)
