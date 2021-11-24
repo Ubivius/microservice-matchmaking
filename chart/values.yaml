@@ -52,7 +52,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: matchmaking.dev.ubivius.tk
+    - host: matchmaking.player.dev.ubivius.tk
       paths:
         - path: /
   tls: []
