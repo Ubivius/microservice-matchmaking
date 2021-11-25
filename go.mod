@@ -3,6 +3,7 @@ module github.com/Ubivius/microservice-matchmaking
 go 1.15
 
 require (
+	github.com/Ubivius/shared-authentication v1.0.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gorilla/mux v1.8.0
