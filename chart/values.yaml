@@ -48,23 +48,17 @@ service:
 
 ingress:
   enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
     - host: matchmaking.player.dev.ubivius.tk
       paths:
         - path: /
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-ingressRoute:
-  enabled: true
-  match: Host(`matchmaking.player.dev.ubivius.tk`) && PathPrefix(`/`)
   tls:
-    secretName: matchmaking.player.dev.ubivius.tk
+    - secretName: matchmaking.player.dev.ubivius.tk
+      hosts:
+        - matchmaking.player.dev.ubivius.tk
 
 resources:
   requests:
